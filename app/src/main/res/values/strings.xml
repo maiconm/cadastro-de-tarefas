@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Cadastro de tarefas</string>
+    <string name="codigo">Codigo</string>
+    <string name="descricao">Descricao</string>
+    <string name="salvar">Salvar</string>
+    <string name="excluir">Excluir</string>
+    <string name="registro_nao_encontrado">registro nao encontrado</string>
+</resources>
