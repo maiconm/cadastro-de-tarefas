@@ -1,9 +1,13 @@
 package com.example.cadastrodetarefas;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -56,7 +60,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private Cursor obterTarefas() {
-        return database.query(NOME_TABELA, CAMPOS_TAREFA, null, null, null, null, null);
+        SharedPreferences prefs = getSharedPreferences(FiltroActivity.NOME_ARQUIVO_PREFS, Context.MODE_PRIVATE);
+        String ordenacao = prefs.getString(FiltroActivity.PREF_ORDENACAO, CAMPO_ID);
+        boolean usarOrdemDecrescente = prefs.getBoolean(FiltroActivity.PREF_FILTRO, false);
+        String filtro = prefs.getString(FiltroActivity.PREF_FILTRO, "");
+
+        String where = null;
+        if (!filtro.trim().isEmpty()) {
+            where = "UPPER (" + CAMPO_DESCRICAO + ") LIKE '" + filtro.toUpperCase() + "%'";
+        }
+
+        String orderBy = ordenacao;
+        if (usarOrdemDecrescente) {
+            orderBy += " DESC";
+        }
+        return database.query(NOME_TABELA, CAMPOS_TAREFA, where, null, null, null, orderBy);
     }
 
     private void carregarTarefa(String codigo) {
@@ -118,5 +136,18 @@ public class MainActivity extends AppCompatActivity {
 
     public void onLimparCampos() {
         limparCampos();
+    }
+
+    public void onFiltroClick(View v) {
+        Intent intent = new Intent(this, FiltroActivity.class);
+        startActivityForResult(intent, FILTRO_REQUEST_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        if (requestCode == FILTRO_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            atualizarLista();
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 }

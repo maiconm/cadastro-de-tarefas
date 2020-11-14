@@ -43,6 +43,11 @@
             android:layout_height="wrap_content"
             android:text="Limpar campos"
             android:onClick="onLimparCampos"/>
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Filtrar campos"
+            android:onClick="onFiltroClick"/>
     </LinearLayout>
     <TextView
         android:layout_width="wrap_content"
